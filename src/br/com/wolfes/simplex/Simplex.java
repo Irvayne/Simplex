@@ -1,102 +1,60 @@
 package br.com.wolfes.simplex;
 
-import java.util.Scanner;
-
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 
 public class Simplex {
 	
-//	Object[] colunas = new Object[] { "coluna 1", "coluna 2", "coluna 3" };
-//
-//    // Cria os dados, array com 3 linha e 3 colunas
-//
-//    Object[][] valores = new Object[3][3];
-//    for (int i = 0; i < 3; i++) {
-//        valores[i][0] = "linha" + i + " coluna" + 0;
-//        valores[i][1] = "linha" + i + " coluna" + 1;
-//        valores[i][2] = "linha" + i + " coluna" + 2;
-//    }
-//	
-//	
-//   
-//	panel.setBounds(10, 11, 446, 333);
-//	frame.getContentPane().add(panel);
-//	panel.setLayout(null);
-//	
-//	table = new JTable(valores, colunas);
-//	table.setBounds(110, 5, 225, 48);
-//	panel.add(table);
+	String saida;
 	
-	public void executa(JTextArea textArea){
-		
-		System.out.println("Iniciando a aplicação");
-		Scanner in = new Scanner(System.in);
-		//linha - qnt de restricoes
-		//coluna- qnt de variaveis
-		int linha = 2;
-		int coluna = 2;
-		
-		
-		double[] objetivo = new double[coluna];
-		System.out.println("Digite a funcao objetivo");
-		for(int j = 0; j < coluna; j++){
-			 objetivo[j] = in.nextDouble();
-		}
-		
-		double[][] restricoes = new double[linha][coluna];
-		System.out.println("Digite as restrições");
-		for(int i = 0; i < linha; i++){
-			for(int j = 0; j < coluna; j++){
-				 restricoes[i][j] = in.nextDouble();
-			}
-		}
-		
-		double[] valorRestricao = new double[linha];
-		System.out.println("Digite os valores das restrições");
-		for (int i = 0; i < linha; i++) {
-			valorRestricao[i] = in.nextDouble();
-		}
-		
+	public void executa(int linha, int coluna,double[] objetivo, double[][] restricoes, double[] valorRestricao, int tipo, JTextArea textArea){
+		System.out.println("tipo = "+tipo);
 		
 		double[][] tablo = geraTablo(restricoes, linha, coluna);
 		double[] custosAssociado = geraCustos(objetivo, linha + coluna);//m mais n é o tamanho novo do tablo
 		
+		double[] custosAssociadoInicial = geraCustos(objetivo, linha + coluna);
+		
 		int[] indiceBase = geraBaseInicial(linha, coluna);
 		
 
-		System.out.println("Tablo gerado");
+		saida = "Tablo gerado\n";
 		for(int i = 0; i < linha; i++){
 			for(int j = 0; j < coluna+linha; j++){
-				 System.out.print(tablo[i][j]+" ");
+				saida += tablo[i][j]+"  ";
 			}
-			System.out.println("= "+valorRestricao[i]);
+			saida += " =  "+valorRestricao[i]+"\n";
 		}
 		
-		System.out.println("Custos associados");
+		saida += "Custos associados\n";
 		for(int j = 0; j < coluna+linha; j++){
-			 System.out.print(custosAssociado[j]+" ");
+			saida += custosAssociado[j]+"  ";
 		}
 		
-		System.out.println("\nIndice da base");
+		saida += "\nIndice da base\n";
 		for(int j = 0; j < linha; j++){
-			 System.out.print(indiceBase[j]+" ");
+			saida += indiceBase[j]+"  ";
 		}
+		calculaZ(indiceBase, custosAssociadoInicial, valorRestricao);
 				
 		
 		
 		while(true){
 			
+			int indiceEntra;
 			
-			int indiceEntra = retornaIndiceParaEntrarMIN(custosAssociado, indiceBase);
+			if(tipo==0){
+				indiceEntra = retornaIndiceParaEntrarMIN(custosAssociado, indiceBase);
+			}else{
+				indiceEntra = retornaIndiceParaEntrarMAX(custosAssociado, indiceBase);
+			}
 			
 			if(indiceEntra == Integer.MIN_VALUE){
-				System.out.println("Infinitas solucoes");
+				saida +="Infinitas solucoes\n";
 				break;
 			}
 			
 			if(indiceEntra == -1){
-				System.out.println("Solucao Otima");
+				saida +="Solucao Otima\n";
 				break;
 			}
 			
@@ -106,32 +64,47 @@ public class Simplex {
 				pivoteia(tablo, custosAssociado, valorRestricao, indiceSai, indiceEntra, linha, coluna+linha);
 				
 				
-				System.out.println("\n\nTablo gerado pivoteado");
+				saida +="\n\nNovo Tablo Gerado\n";
 				for(int i = 0; i < linha; i++){
 					for(int j = 0; j < coluna+linha; j++){
-						 System.out.print(tablo[i][j]+" ");
+						saida +=tablo[i][j]+"  ";
 					}
-					System.out.println("= "+valorRestricao[i]);
+					saida +=" =  "+valorRestricao[i]+"\n";
 				}
 				
 				
-				System.out.println("Custos associados ");
+				saida +="Custos associados \n";
 				for(int j = 0; j < coluna+linha; j++){
-					 System.out.print(custosAssociado[j]+" ");
+					saida +=custosAssociado[j]+"  ";
 				}
 				
-				System.out.println("\nElementos na base");
+				saida +="\nElementos na base\n";
 				for(int j = 0; j < linha; j++){
-					 System.out.print("x"+(indiceBase[j]+1)+" ");
+					saida +="x"+(indiceBase[j]+1)+"  ";
 				}
 				
 			}else{
-				System.out.println("Solucao ilimitada");
+				saida +="\nSolucao ilimitada\n";
 				break;
 			}
+			
+			calculaZ(indiceBase, custosAssociadoInicial , valorRestricao);
 		}
+		
+		textArea.setText(saida);
 	}
 	
+	private void calculaZ(int[] indiceBase, double[] custosAssociadoInicial, double[] valorRestricao) {
+		double z = 0;
+		
+		for(int i = 0; i < indiceBase.length; i++){
+			z = z + custosAssociadoInicial[indiceBase[i]]* valorRestricao[i];
+		}
+		
+		saida +="\nZ  =  " + z+"\n";
+		
+	}
+
 	private int testeDaRazao(double tablo[][],
 			int base[], double valorRestricoes[],
 			int indiceEntra,
@@ -153,7 +126,7 @@ public class Simplex {
 		}
 		if(indice != -1){
 		int indiceSai = base[indice];
-		System.out.println("Elemento que sai = x"+(indiceSai+1));
+		saida +="Elemento que sai = x"+(indiceSai+1)+"\n";
 		base[indice] = indiceEntra;
 		}
 		return indice;
@@ -185,16 +158,28 @@ public class Simplex {
 		}
 		
 		if(indice!= -1 && custosAssociados[indice] < 0){
-			System.out.println("\nElemento que entra = x"+(indice+1));
+			saida +="\nElemento que entra = x"+(indice+1)+"\n";
 			return indice;
 		}else{
 			return -1;
 		}
 	}
 	
-	private  int retornaIndiceParaEntrarMAX(double custosAssociados[]){
-		double valor = -100000;
+	private  int retornaIndiceParaEntrarMAX(double custosAssociados[], int[] base){
+		double valor = Integer.MIN_VALUE;
 		int indice = -1;
+		
+		for(int i = 0; i < custosAssociados.length; i++){
+			boolean verifica = false;
+			for(int j = 0; j < base.length; j++){
+				if(base[j] == i){
+					verifica = true;
+				}
+			}
+			if(!verifica && custosAssociados[i]==0){
+				return Integer.MIN_VALUE;
+			}
+		}
 		
 		for(int i = 0; i < custosAssociados.length; i++){
 			if(valor < custosAssociados[i]){

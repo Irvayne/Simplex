@@ -20,6 +20,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
+import java.awt.Color;
 
 public class TelaInicial{
 
@@ -54,14 +55,15 @@ public class TelaInicial{
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 482, 394);
+		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JLabel lblPplresolve = new JLabel("PPLReSoLVe");
-		lblPplresolve.setBounds(161, 38, 125, 28);
+		JLabel lblPplresolve = new JLabel("FEIO Systems");
+		lblPplresolve.setForeground(Color.BLUE);
+		lblPplresolve.setBounds(146, 38, 162, 28);
 		frame.getContentPane().add(lblPplresolve);
-		lblPplresolve.setFont(new Font("Tahoma", Font.PLAIN, 23));
+		lblPplresolve.setFont(new Font("Trebuchet MS", Font.ITALIC, 23));
 				
 		JButton btnIniciar = new JButton("Iniciar");
 		btnIniciar.setBounds(146, 115, 151, 23);

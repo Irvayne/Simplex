@@ -14,6 +14,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
 
 public class TelaInput {
 
@@ -37,16 +38,16 @@ public class TelaInput {
 	private void initialize() {
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 482, 394);
+		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JRadioButton rdbtnMax = new JRadioButton("MAX");
-		rdbtnMax.setBounds(32, 254, 73, 23);
+		rdbtnMax.setBounds(239, 84, 73, 23);
 		frame.getContentPane().add(rdbtnMax);
 		
 		JRadioButton rdbtnMin = new JRadioButton("MIN");
-		rdbtnMin.setBounds(32, 280, 73, 23);
+		rdbtnMin.setBounds(239, 110, 73, 23);
 		frame.getContentPane().add(rdbtnMin);
 		
 		ButtonGroup group = new ButtonGroup();
@@ -64,7 +65,7 @@ public class TelaInput {
 		         100, //max
 		         1);//step
 		JSpinner spinner = new JSpinner(spinnerModel);
-		spinner.setBounds(20, 84, 29, 20);
+		spinner.setBounds(20, 85, 29, 20);
 		frame.getContentPane().add(spinner);
 		
 		JLabel lblQuantidadeDeRestries = new JLabel("Quantidade de Restri\u00E7\u00F5es:");
@@ -79,7 +80,7 @@ public class TelaInput {
 		spinner_1.setBounds(20, 140, 29, 20);
 		frame.getContentPane().add(spinner_1);
 		
-		JButton btnNext = new JButton("Next");
+		JButton btnNext = new JButton("Avançar");
 		btnNext.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int qntVariaveis = (int) spinner.getValue();
@@ -96,10 +97,18 @@ public class TelaInput {
 				
 			}
 		});
-		btnNext.setBounds(277, 254, 89, 23);
+		btnNext.setBounds(260, 212, 148, 23);
 		frame.getContentPane().add(btnNext);
+		
+		JLabel lblTipoDaFuno = new JLabel("Tipo da Fun\u00E7\u00E3o Objetivo:");
+		lblTipoDaFuno.setBounds(200, 58, 157, 14);
+		frame.getContentPane().add(lblTipoDaFuno);
+		
+		JLabel lblInformaesSobreO = new JLabel("Informa\u00E7\u00F5es sobre o PPL");
+		lblInformaesSobreO.setFont(new Font("Tahoma", Font.PLAIN, 26));
+		lblInformaesSobreO.setBounds(64, 0, 360, 47);
+		frame.getContentPane().add(lblInformaesSobreO);
 		
 		
 	}
-
 }
